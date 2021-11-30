@@ -12,3 +12,5 @@
 | `jis2` | false | 漢字(JIS 0208)を含める |
 
 含める文字が指定されていない場合、平仮名、片仮名、漢字(JIS 0208)を含めます
+
+[ダウンロード](https://github.com/minebreaker/japanese-password/releases)
