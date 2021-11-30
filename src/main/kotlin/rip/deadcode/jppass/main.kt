@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
             printHelp()
         }
         Mode.VERSION -> {
-            println("japanese-password 0.1")
+            println("japanese-password 0.2")
         }
         Mode.PRINT -> {
             val result = generate(config, SecureRandom())
