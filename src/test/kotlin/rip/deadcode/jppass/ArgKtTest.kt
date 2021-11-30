@@ -25,14 +25,24 @@ internal class ArgKtTest {
         config = parse(args)
         assertThat(config.mode).isEqualTo(Mode.PRINT)
         assertThat(config.length).isEqualTo(16)
-        assertThat(config.katakana).isEqualTo(false)
-        assertThat(config.kanji).isEqualTo(false)
+        assertThat(config.hiragana).isTrue()
+        assertThat(config.katakana).isTrue()
+        assertThat(config.jis2).isTrue()
 
         args = arrayOf("-l", "1", "-k")
         config = parse(args)
         assertThat(config.mode).isEqualTo(Mode.PRINT)
         assertThat(config.length).isEqualTo(1)
-        assertThat(config.katakana).isEqualTo(true)
-//        assertThat(config.kanji).isEqualTo(true)
+        assertThat(config.hiragana).isFalse()
+        assertThat(config.katakana).isTrue()
+        assertThat(config.jis2).isFalse()
+
+        args = arrayOf("-t", "-jis2")
+        config = parse(args)
+        assertThat(config.mode).isEqualTo(Mode.PRINT)
+        assertThat(config.length).isEqualTo(16)
+        assertThat(config.hiragana).isTrue()
+        assertThat(config.katakana).isFalse()
+        assertThat(config.jis2).isTrue()
     }
 }

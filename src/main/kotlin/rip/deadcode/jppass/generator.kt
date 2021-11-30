@@ -32,16 +32,16 @@ val katakana = listOf(
 )
 
 fun check(config: Config, s: String): Boolean {
-    return hiragana.any { c -> s.contains(c) }
+    return (if (config.hiragana) hiragana.any { c -> s.contains(c) } else true)
             && (if (config.katakana) katakana.any { c -> s.contains(c) } else true)
-            && (if (config.kanji) jis0208.any { c -> s.contains(c) } else true)
+            && (if (config.jis2) jis0208.any { c -> s.contains(c) } else true)
 }
 
 tailrec fun generate(config: Config, random: Random): String {
 
-    val candidates = hiragana +
+    val candidates = (if (config.hiragana) hiragana else listOf()) +
             (if (config.katakana) katakana else listOf()) +
-            (if (config.kanji) jis0208 else listOf())
+            (if (config.jis2) jis0208 else listOf())
 
     val result = Stream
         .generate {

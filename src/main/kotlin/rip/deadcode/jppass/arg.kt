@@ -9,12 +9,12 @@ import org.apache.commons.cli.Options
 val parser: CommandLineParser = DefaultParser()
 
 val options: Options = Options()
-        .addOption("l", "length", true, "出力する文字数")
-        .addOption("k", false, "片仮名を含める")
-//        .addOption("c", false, "漢字を含める")
-//        .addOption("s", false, "小文字を含める")
-        .addOption("v", "version", false, "バージョン情報")
-        .addOption("h", "help", false, "ヘルプ")
+    .addOption("l", "length", true, "出力する文字数")
+    .addOption("t", false, "平仮名を含める")
+    .addOption("k", false, "片仮名を含める")
+    .addOption("jis2", "jis0208", false, "漢字(JIS 0208)を含める")
+    .addOption("v", "version", false, "バージョン情報")
+    .addOption("h", "help", false, "ヘルプ")
 
 enum class Mode {
     PRINT,
@@ -23,10 +23,11 @@ enum class Mode {
 }
 
 data class Config(
-        val mode: Mode,
-        val length: Int,
-        val katakana: Boolean,
-        val kanji: Boolean
+    val mode: Mode,
+    val length: Int,
+    val hiragana: Boolean,
+    val katakana: Boolean,
+    val jis2: Boolean
 )
 
 fun parse(args: Array<String>): Config {
@@ -35,8 +36,14 @@ fun parse(args: Array<String>): Config {
         val command = parser.parse(options, args)
         val lengthStr = command.getOptionValue("l")
         val length = lengthStr?.toInt() ?: 16
-        val katakana = command.hasOption("k")
-        val kanji = command.hasOption("c")
+        val hiraganaOpt = command.hasOption("t")
+        val katakanaOpt = command.hasOption("k")
+        val jis2Opt = command.hasOption("jis2")
+
+        val enableAll = !hiraganaOpt && !katakanaOpt && !jis2Opt
+        val hiragana = hiraganaOpt || enableAll
+        val katakana = katakanaOpt || enableAll
+        val jis2 = jis2Opt || enableAll
         val version = command.hasOption("v")
         val help = command.hasOption("h")
 
@@ -47,18 +54,20 @@ fun parse(args: Array<String>): Config {
         }
 
         return Config(
-                mode,
-                length,
-                katakana,
-                kanji
+            mode,
+            length,
+            hiragana,
+            katakana,
+            jis2
         )
 
     } catch (e: Exception) {
         return Config(
-                Mode.HELP,
-                0,
-                false,
-                false
+            Mode.HELP,
+            0,
+            false,
+            false,
+            false
         )
     }
 }
