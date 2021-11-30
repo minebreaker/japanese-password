@@ -2,7 +2,6 @@ package rip.deadcode.jppass
 
 import org.apache.commons.cli.CommandLineParser
 import org.apache.commons.cli.DefaultParser
-import org.apache.commons.cli.HelpFormatter
 import org.apache.commons.cli.Options
 
 
@@ -70,8 +69,4 @@ fun parse(args: Array<String>): Config {
             false
         )
     }
-}
-
-fun printHelp() {
-    HelpFormatter().printHelp("jppass", options)
 }

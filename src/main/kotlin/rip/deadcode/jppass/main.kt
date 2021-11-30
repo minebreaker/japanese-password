@@ -1,5 +1,6 @@
 package rip.deadcode.jppass
 
+import org.apache.commons.cli.HelpFormatter
 import java.security.SecureRandom
 
 
@@ -19,4 +20,11 @@ fun main(args: Array<String>) {
             println(result)
         }
     }
+}
+
+fun printHelp() {
+    println("japanese-password 日本語パスワード生成器")
+    println("https://github.com/minebreaker/japanese-password")
+    println()
+    HelpFormatter().printHelp("jppass", options)
 }
