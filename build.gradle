@@ -65,3 +65,16 @@ jar {
     from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     duplicatesStrategy(DuplicatesStrategy.INCLUDE)
 }
+
+task buildImage(type: Exec, dependsOn: jar) {
+    def os = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem
+    def jar = jar.archiveFileName.get()
+    if (os.isLinux()) {
+        commandLine "./script/build-image.sh", jar
+    } else if (os.isWindows()) {
+        commandLine "script/build-image.cmd", jar
+    } else {
+        throw new RuntimeException("Unsupported operating system: ${os}")
+    }
+}
+assemble.dependsOn(buildImage)

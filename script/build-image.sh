@@ -1,4 +1,9 @@
+#!/bin/bash
+
+if [[ -z "$1" ]]; then
+    exit 1
+fi
+
 native-image \
-  --no-fallback \
-  --allow-incomplete-classpath \
-  -jar "../build/libs/japanese-password-0.2.jar"
+    --no-fallback \
+    -jar "./build/libs/$1"
