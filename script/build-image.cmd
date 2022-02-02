@@ -2,4 +2,5 @@ CALL "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary
 
 native-image^
     --no-fallback^
-    -jar "./build/libs/%1"
+    -jar "./build/libs/%1"^
+    --gc=epsilon

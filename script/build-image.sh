@@ -6,4 +6,5 @@ fi
 
 native-image \
     --no-fallback \
-    -jar "./build/libs/$1"
+    -jar "./build/libs/$1" \
+    --gc=epsilon
