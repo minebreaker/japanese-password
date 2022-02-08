@@ -29,13 +29,14 @@ internal class ArgKtTest {
         assertThat(config.katakana).isTrue()
         assertThat(config.jis2).isTrue()
 
-        args = arrayOf("-l", "1", "-k")
+        args = arrayOf("-l", "1", "-k", "-n")
         config = parse(args)
         assertThat(config.mode).isEqualTo(Mode.PRINT)
         assertThat(config.length).isEqualTo(1)
         assertThat(config.hiragana).isFalse()
         assertThat(config.katakana).isTrue()
         assertThat(config.jis2).isFalse()
+        assertThat(config.noNewline).isTrue()
 
         args = arrayOf("-t", "-jis2")
         config = parse(args)
@@ -44,5 +45,6 @@ internal class ArgKtTest {
         assertThat(config.hiragana).isTrue()
         assertThat(config.katakana).isFalse()
         assertThat(config.jis2).isTrue()
+        assertThat(config.noNewline).isFalse()
     }
 }

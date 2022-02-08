@@ -17,7 +17,11 @@ fun main(args: Array<String>) {
         }
         Mode.PRINT -> {
             val result = generate(config, SecureRandom())
-            println(result)
+            if (config.noNewline) {
+                print(result)
+            } else {
+                println(result)
+            }
         }
     }
 }

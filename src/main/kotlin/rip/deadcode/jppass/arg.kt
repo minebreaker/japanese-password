@@ -12,6 +12,7 @@ val options: Options = Options()
     .addOption("t", false, "平仮名を含める")
     .addOption("k", false, "片仮名を含める")
     .addOption("jis2", "jis0208", false, "漢字(JIS 0208)を含める")
+    .addOption("n", "no-newline", false, "改行を出力しない")
     .addOption("v", "version", false, "バージョン情報")
     .addOption("h", "help", false, "ヘルプ")
 
@@ -26,7 +27,8 @@ data class Config(
     val length: Int,
     val hiragana: Boolean,
     val katakana: Boolean,
-    val jis2: Boolean
+    val jis2: Boolean,
+    val noNewline: Boolean
 )
 
 fun parse(args: Array<String>): Config {
@@ -43,6 +45,8 @@ fun parse(args: Array<String>): Config {
         val hiragana = hiraganaOpt || enableAll
         val katakana = katakanaOpt || enableAll
         val jis2 = jis2Opt || enableAll
+
+        val noNewline = command.hasOption("n")
         val version = command.hasOption("v")
         val help = command.hasOption("h")
 
@@ -57,13 +61,15 @@ fun parse(args: Array<String>): Config {
             length,
             hiragana,
             katakana,
-            jis2
+            jis2,
+            noNewline
         )
 
     } catch (e: Exception) {
         return Config(
             Mode.HELP,
             0,
+            false,
             false,
             false,
             false
