@@ -1,6 +1,8 @@
 package rip.deadcode.jppass
 
 import org.apache.commons.cli.HelpFormatter
+import rip.deadcode.jppass.Try.Failure
+import rip.deadcode.jppass.Try.Success
 import java.security.SecureRandom
 
 
@@ -16,11 +18,15 @@ fun main(args: Array<String>) {
             println("japanese-password 0.2")
         }
         Mode.PRINT -> {
-            val result = generate(config, SecureRandom())
-            if (config.noNewline) {
-                print(result)
-            } else {
-                println(result)
+            when (val result = generate(config, SecureRandom())) {
+                is Success ->
+                    if (config.noNewline) {
+                        print(result.get())
+                    } else {
+                        println(result.get())
+                    }
+                is Failure ->
+                    System.err.println(result.failure.message)
             }
         }
     }
