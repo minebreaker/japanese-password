@@ -7,4 +7,5 @@ fi
 native-image \
     --no-fallback \
     -jar "./build/libs/$1" \
-    --gc=epsilon
+    --gc=epsilon \
+    -H:IncludeResources="version|commit"

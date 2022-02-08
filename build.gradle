@@ -1,3 +1,6 @@
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.6.0'
 }
@@ -66,6 +69,29 @@ jar {
     from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     duplicatesStrategy(DuplicatesStrategy.INCLUDE)
 }
+
+task writeCommitHash(type: Exec, dependsOn: processResources) {
+    def resourceDir = sourceSets.main.output.resourcesDir.toPath()
+    def commitFile = resourceDir.resolve("commit")
+    doFirst {
+        Files.createDirectories(resourceDir)
+    }
+    def baos = new ByteArrayOutputStream()
+    standardOutput = baos
+    commandLine "git", "rev-parse", "HEAD"
+    doLast {
+        Files.writeString(commitFile, new String(baos.toByteArray(), StandardCharsets.UTF_8))
+    }
+}
+
+task writeVersion(dependsOn: writeCommitHash) {
+    def resourceDir = sourceSets.main.output.resourcesDir.toPath()
+    def versionFile = resourceDir.resolve("version")
+    doLast {
+        Files.writeString(versionFile, version.toString())
+    }
+}
+jar.dependsOn(writeVersion)
 
 task buildImage(type: Exec, dependsOn: jar) {
     def os = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem
