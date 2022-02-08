@@ -28,3 +28,10 @@
 # npm i -g clipboard-cli
 > jppass -t -n | clipboard
 ```
+
+
+# TODOs
+
+* Fix the gradle caching meta resource issue
+* ci tests for executables
+* performance test
