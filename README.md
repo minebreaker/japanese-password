@@ -24,7 +24,7 @@
 おむきさなてわくへろほへけわほろ
 
 # -nオプションはclipboard-cliのようなユーティリティーと組み合わせると便利です
-# が、PowerShellが適切に設定されていないと文字化けする
+# が、PowerShellは自動で改行を追加したりするのでLinux環境でないと意味がないかも
 # npm i -g clipboard-cli
 > jppass -t -n | clipboard
 ```
