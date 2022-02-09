@@ -1,0 +1,21 @@
+name: Java CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Graal
+        uses: rinx/setup-graalvm-ce@v0.0.5
+        with:
+          graalvm-version: "22.0.0.2"
+          java-version: "java17"
+          native-image: "true"
+      - name: Permission
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        run: ./gradlew build -PGITHUB_USER=${{ secrets._GITHUB_USER }} -PGITHUB_TOKEN=${{ secrets._GITHUB_TOKEN }}
