@@ -82,7 +82,8 @@ def nativeImagePath = nativeImageDir.resolve(nativeImageName)
 task writeCommitHash(type: Exec) {
     def commitFile = resourceDir.resolve("commit")
 
-//    doNotTrackState("")
+    // This will disable incremental compile
+    doNotTrackState("")
     outputs.file(commitFile)
 
     def baos = new ByteArrayOutputStream()
@@ -97,7 +98,7 @@ task writeCommitHash(type: Exec) {
 task writeVersion {
     def versionFile = resourceDir.resolve("version")
 
-//    doNotTrackState("")
+    doNotTrackState("")
     outputs.file(versionFile)
 
     doLast {
