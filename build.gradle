@@ -70,38 +70,74 @@ jar {
     duplicatesStrategy(DuplicatesStrategy.INCLUDE)
 }
 
-task writeCommitHash(type: Exec, dependsOn: processResources) {
-    def resourceDir = sourceSets.main.output.resourcesDir.toPath()
+def resourceDir = sourceSets.main.output.resourcesDir.toPath()
+def os = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem
+def nativeImageDir = buildDir.toPath().resolve("native-image")
+def jarName = jar.archiveFileName.get()
+def nativeImageExt = os.isWindows() ? ".exe" : ""
+def nativeImageName = jarName.replace(".jar", nativeImageExt)
+def nativeImagePath = nativeImageDir.resolve(nativeImageName)
+
+
+task writeCommitHash(type: Exec) {
     def commitFile = resourceDir.resolve("commit")
-    doFirst {
-        Files.createDirectories(resourceDir)
-    }
+
+//    doNotTrackState("")
+    outputs.file(commitFile)
+
     def baos = new ByteArrayOutputStream()
     standardOutput = baos
     commandLine "git", "rev-parse", "HEAD"
     doLast {
+        Files.createDirectories(resourceDir)
         Files.writeString(commitFile, new String(baos.toByteArray(), StandardCharsets.UTF_8))
     }
 }
 
-task writeVersion(dependsOn: writeCommitHash) {
-    def resourceDir = sourceSets.main.output.resourcesDir.toPath()
+task writeVersion {
     def versionFile = resourceDir.resolve("version")
+
+//    doNotTrackState("")
+    outputs.file(versionFile)
+
     doLast {
+        Files.createDirectories(resourceDir)
         Files.writeString(versionFile, version.toString())
     }
 }
-jar.dependsOn(writeVersion)
+processResources.dependsOn(writeCommitHash, writeVersion)
+compileTestKotlin.dependsOn(processResources)  // Gradle warns. Not sure why this is not default
 
-task buildImage(type: Exec, dependsOn: jar) {
-    def os = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem
-    def jar = jar.archiveFileName.get()
+task runGraal(type: Exec, dependsOn: jar) {
     if (os.isLinux()) {
-        commandLine "./script/build-image.sh", jar
+        commandLine projectDir.toPath().resolve("script/build-image.sh"), jarName
     } else if (os.isWindows()) {
-        commandLine "script/build-image.cmd", jar
+        commandLine projectDir.toPath().resolve("script/build-image.cmd"), jarName
     } else {
         throw new RuntimeException("Unsupported operating system: ${os}")
     }
+
+    environment "PROJECT_HOME", projectDir
+    workingDir nativeImageDir
+    inputs.file(jar.archiveFile)
+    outputs.file(nativeImagePath)
+
+    doFirst {
+        Files.createDirectories(nativeImageDir)
+    }
 }
-assemble.dependsOn(buildImage)
+
+task renameNativeImage(type: Copy, dependsOn: runGraal) {
+    def outputName = "jppass" + nativeImageExt
+
+    from nativeImageDir
+    into nativeImageDir
+    include nativeImageName
+    rename nativeImageName, outputName
+
+    inputs.file(nativeImagePath)
+    outputs.file(nativeImageDir.resolve(outputName))
+}
+
+task buildNativeImage(dependsOn: renameNativeImage)
+assemble.dependsOn(buildNativeImage)

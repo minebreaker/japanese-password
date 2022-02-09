@@ -1,5 +1,7 @@
 # 日本語用パスワード生成器
 
+[![Java CI](https://github.com/minebreaker/japanese-password/actions/workflows/build.yml/badge.svg)](https://github.com/minebreaker/japanese-password/actions/workflows/build.yml)
+
 秘密の質問を要求してきて、しかも「全角ひらがな」限定のようなサイトがいまだに多く存在するので、
 自前で生成器を書きました。
 
