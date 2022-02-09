@@ -15,7 +15,16 @@ jobs:
           graalvm-version: "22.0.0.2"
           java-version: "java17"
           native-image: "true"
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          key: cache-${{ hashFiles('build.gradle') }}
+          path: |
+            ~/.gradle
+          restore-keys: |
+            cache-
+
       - name: Permission
-        run: chmod +x ./gradlew
+        run: chmod +x ./gradlew ./script/build-image.sh
       - name: Build with Gradle
         run: ./gradlew build -PGITHUB_USER=${{ secrets._GITHUB_USER }} -PGITHUB_TOKEN=${{ secrets._GITHUB_TOKEN }} --stacktrace --info
